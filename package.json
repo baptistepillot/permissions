@@ -1,0 +1,15 @@
+{
+  "author": "Baptiste Pillot <baptiste@pillot.fr",
+  "description": "Security check and fix of file ownership and permissions on Linux servers",
+  "devDependencies": {
+    "@types/node": "^22.7.4",
+    "typescript": "^5.6.2"
+  },
+  "license": "LGPL-3.0-or-later",
+  "name": "permissions",
+  "scripts": {
+    "build": "tsc -b -f",
+    "start": "node main"
+  },
+  "version": "1.0.0"
+}

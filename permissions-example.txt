@@ -1,0 +1,26 @@
+# Configure your own permissions.txt CSV configuration file. Here is an example:
+
+# path;user:group;chmod1,chmod2;recurse
+# - path: the path you want to check
+# - user: the name of the expected user
+# - group: the name of the expected group
+# - chmod: the access rights to be set
+# - recurse: 1 if you want to apply the rights recursively to files and subdirectories
+
+# examples:
+
+/bin/everybodyrunsme;root:root;ugo+rx,go-w
+# The /bin/everybodyrunsme script can be run by everyone, but is not writable by users other than root.
+
+/home/{user1,user2};root:root;755
+# /home/user1 and /home/user2 must belong to user root and be read/write accessible to everybody (the folder only).
+
++$home;$user:$user;ugo+rw;1
+# All user directories in /home and /root must belong to the corresponding user, be read+write accessible to everyone,
+# along with their files and subfolders.
+# /home/user1 and /home/user2 will except, because of the configuration line above.
+# The files contained into /root/subfolder and its sub-folders will except, due to the configuration line below.
+# The + prefix means that the folder should be created if it doesn't already exist.
+
+/root/subfolder/*;user1:user1;go-rwxst;1
+# All files in /root/subfolder (not subfolder itself) should belong to user1, and be inaccessible to all other users.
