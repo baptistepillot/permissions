@@ -66,7 +66,11 @@ git merge dev --no-commit &>/dev/null
 ignore_in_prod
 
 echo "Adding transpiled files..."
+git add *.css
 git add *.js
+git add package*.json
+git add permissions-example.txt
+git add README.md
 
 # Check if there are staged changes (to avoid empty commits)
 if git diff --cached --quiet; then
