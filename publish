@@ -1,5 +1,20 @@
 #!/bin/bash
 
+ignore_in_prod() {
+  echo "Do not merge files to be ignored in production..."
+  git checkout -- .gitignore 2>/dev/null
+  git rm -f publish 2>/dev/null
+  git rm -f tsconfig.* 2>/dev/null
+}
+
+tag_exists() {
+  if git rev-parse "$1" &>/dev/null; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 # Function to validate version format (vX.X or vX.X.X)
 validate_version() {
   if [[ $1 =~ ^v[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
@@ -17,6 +32,11 @@ fi
 version=$1
 if ! validate_version "$version"; then
   echo "Error: Invalid version format. Use vX.X or vX.X.X (e.g., v1.0 or v1.0.15)."
+  exit 1
+fi
+
+if tag_exists "$version"; then
+  echo "Error: Tag $version already exists. Please use a different version number."
   exit 1
 fi
 
@@ -40,7 +60,10 @@ npm run build
 
 echo "Switching to the prod branch..."
 git checkout prod
-git merge dev --no-commit
+
+git merge dev --no-commit &>/dev/null
+
+ignore_in_prod
 
 echo "Adding transpiled files..."
 git add *.js
@@ -56,7 +79,7 @@ echo "Committing transpiled files to the prod branch..."
 git commit -m "$version"
 
 echo "Creating a tag for version $version..."
-git tag -a "$version"
+git tag -a "$version" -m "$version"
 
 echo "Pushing changes and tag to the prod branch..."
 git push origin prod
